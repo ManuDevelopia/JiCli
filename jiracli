@@ -1,12 +1,53 @@
 #!/usr/bin/env python
+"""Jicli v0.1 - Jira Command Line Interpreter."""
 
+"""
+TODO
+=================================================
+- Improve issue visualization
+- Add issue actions
+- ...
+
+Changelog
+=================================================
+2015/06/26 - Added ConfigParser to retrieve configuration (url, user, password)
+                        from '.jicli' config file. example aded to project
+                    - Added home detection to improve config loading
+
+"""
+
+import ConfigParser
+
+from os.path import expanduser
 from jira.client import JIRA
 
-url = {'server': 'https://your.jira.instance'}
+# Getting home path
+home = expanduser("~")
 
-jira = JIRA(options=url, basic_auth=('user', 'password'))
+# Retrieving the configuration
+config = ConfigParser.ConfigParser()
+config.read(home + "/.config/jicli/jiclirc")
 
-issues = jira.search_issues('assignee=user and status=Open')
+# Jira server URL
+jira_url = config.get("jira", "url_server")
 
+# Jira user and password
+jira_user = config.get("jira", "user")
+jira_passwd = config.get("jira", "passwd")
+
+# Connection to Jira
+jira = JIRA(server=(jira_url), basic_auth=(jira_user, jira_passwd))
+
+# Issue retrive
+issues = jira.search_issues('assignee=uqasaradmin and status=Open')
+
+# Prints issue details
 for issue in issues:
-    print issue.key + '-' + issue.fields.issuetype.name + '-' + issue.fields.summary
+    print (issue.key + '-' + issue.fields.issuetype.name + '-' + issue.fields.summary)
+
+
+# Main Method
+def main():
+    """Jicli - Jira Command Line Interpreter."""
+    if __name__ == 'main':
+        main()
