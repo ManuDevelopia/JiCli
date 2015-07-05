@@ -15,11 +15,12 @@ Changelog
                     - Added home detection to improve config loading
 
 """
-
+import click
 import ConfigParser
 
 from os.path import expanduser
 from jira.client import JIRA
+
 
 # Getting home path
 home = expanduser("~")
@@ -27,6 +28,11 @@ home = expanduser("~")
 # Retrieving the configuration
 config = ConfigParser.ConfigParser()
 config.read(home + "/.config/jicli/jiclirc")
+
+# Parse the config reading all the sections
+# this supports diferent jira instance reading
+for section in config.sections():
+    print section
 
 # Jira server URL
 jira_url = config.get("jira", "url_server")

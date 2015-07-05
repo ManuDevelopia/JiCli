@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+"""Jicli v0.1 - Jira Command Line Interpreter."""
+import ConfigParser
+
+import click
+
+from jira.client import JIRA
+from os.path import expanduser
+
+# No home path has been defined
+home = None
+# Configuration file
+config = None
+# Jira connection
+jira = None
+
+
+@click.command()
+def main():
+
+    # Inits envirorment
+    init_envo()
+
+    # Connect with Jira using the readed config
+    connect(config)
+
+    # Executes the query
+    query_issues()
+
+
+def connect(config):
+    global jira
+
+    # Jira server URL
+    jira_url = config.get("jira", "url_server")
+
+    # Jira user and password
+    jira_user = config.get("jira", "user")
+    jira_passwd = config.get("jira", "passwd")
+
+    # Connection to Jira
+    jira = JIRA(server=(jira_url), basic_auth=(jira_user, jira_passwd))
+
+
+def init_envo():
+    global home
+    global config
+
+    # Getting home path
+    home = expanduser("~")
+
+    # Retrieving the configuration
+    config = ConfigParser.ConfigParser()
+    config.read(home + "/.config/jicli/jiclirc")
+
+    # Parse the config reading all the sections
+    # this supports diferent jira instance reading
+    for section in config.sections():
+        print section
+
+
+def query_issues():
+    # Issue retrive
+    issues = jira.search_issues('assignee=uqasaradmin and status=Open')
+
+    # Prints issue details
+    for issue in issues:
+        issue_print(issue)
+
+
+def issue_print(issue):
+    print issue.key + \
+        '-' + issue.fields.issuetype.name + \
+        '-' + issue.fields.summary
+
+
+if __name__ == "__main__":
+    main()
