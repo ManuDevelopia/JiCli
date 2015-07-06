@@ -14,18 +14,33 @@ config = None
 # Jira connection
 jira = None
 
+actions = ['list', 'close']
+
 
 @click.command()
-def main():
+@click.argument('action', nargs=1, required=False)
+@click.argument('issues', nargs=-1)
+def main(action, issues):
+    """JiCli - Jira Commandline Interface fast Management tool.
+    This tool provides fast access to query and perform basic actions
+    in Jira from the command line."""
 
     # Inits envirorment
     init_envo()
 
+    # Check if the acction can be performed otherwise exits
+    if action not in actions and action is not None:
+        quit()
+
     # Connect with Jira using the readed config
     connect(config)
 
-    # Executes the query
-    query_issues()
+    # Check action to be performed
+    if action in actions:
+        perform(action, issues)
+    elif action is None:
+        # Executes the query
+        query_issues()
 
 
 def connect(config):
@@ -57,6 +72,12 @@ def init_envo():
     # this supports diferent jira instance reading
     for section in config.sections():
         print section
+
+
+def perform(action, issues):
+    # Perform the provided action to the given issues
+    for issue in issues:
+        print 'Applies ' + action + ' to ' + issue
 
 
 def query_issues():
