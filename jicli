@@ -82,7 +82,7 @@ def init_envo():
     # this supports diferent jira instance reading
     for section in config.sections():
         print section
-    # Sections are the instances
+    # Sections are the instances of jira
 
 
 def perform(action, issues):
@@ -96,14 +96,16 @@ def query_issues():
     issues = jira.search_issues('assignee=uqasaradmin and status=Open')
     # Prints issue details
     for issue in issues:
-        issue_print(issue)
+        print_issue(issue)
 
 
-def issue_print(issue):
+def print_issue(issue):
     """Print the issue and its details in a beautifull way."""
     print issue.key + \
         '-' + issue.fields.issuetype.name + \
         '-' + issue.fields.summary
+    click.secho(issue.fields.issuetype.name, fg='green', bold=True)
+    click.secho(issue.fields.summary, bg='blue', fg='white', bold=True)
 
 
 if __name__ == "__main__":
