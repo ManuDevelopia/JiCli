@@ -14,7 +14,7 @@ config = None
 # Jira connection
 jira = None
 # Available Issue options
-actions = ['list', 'close', 'comment', 'comments', 'delete', 'query']
+actions = ['list', 'close', 'comment', 'comments', 'delete', 'query', 'browse']
 # Issue filtering by
 filter = ['type', 'key', 'assignee', 'reporter', 'priority', 'status', 'resolution']
 # TODO: enable a place in config to add more custom filters to expand possibilities
@@ -101,11 +101,17 @@ def query_issues():
 
 def print_issue(issue):
     """Print the issue and its details in a beautifull way."""
-    print issue.key + \
-        '-' + issue.fields.issuetype.name + \
-        '-' + issue.fields.summary
-    click.secho(issue.fields.issuetype.name, fg='green', bold=True)
-    click.secho(issue.fields.summary, bg='blue', fg='white', bold=True)
+#    print issue.key + \
+#        '-' + issue.fields.issuetype.name + \
+#        '-' + issue.fields.summary
+#    click.secho(issue.fields.issuetype.name, fg='green', bold=True)
+#    click.secho(issue.fields.summary, bg='blue', fg='white', bold=True)
+
+    click.echo(
+        click.style(issue.key) + " " +
+        click.style(issue.fields.issuetype.name, fg='green') + " " +
+        click.style(issue.fields.summary)
+    )
 
 
 if __name__ == "__main__":
