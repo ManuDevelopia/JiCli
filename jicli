@@ -13,11 +13,15 @@ home = None
 config = None
 # Jira connection
 jira = None
+
 # Available Issue options
-actions = ['list', 'close', 'comment', 'comments', 'delete', 'query', 'browse']
+actions = [
+    'list', 'close', 'comment', 'comments', 'delete', 'query', 'browse']
+
 # Issue filtering by
-filter = ['type', 'key', 'assignee', 'reporter', 'priority', 'status', 'resolution']
-# TODO: enable a place in config to add more custom filters to expand possibilities
+filter = [
+    'type', 'key', 'assignee', 'reporter', 'priority', 'status', 'resolution'
+    ]
 
 
 @click.command()
@@ -99,17 +103,25 @@ def query_issues():
         print_issue(issue)
 
 
+def color_issue(issue):
+    """Color issue type name according to type."""
+    if issue.fields.issuetype.name == 'Bug':
+        return 'red'
+    elif issue.fields.issuetype.name == 'Story':
+        return 'blue'
+    elif issue.fields.issuetype.name == 'New Feature':
+        return 'black'
+    elif issue.fields.issuetype.name == 'Epic':
+        return 'magenta'
+    elif issue.fields.issuetype.name == 'Task':
+        return 'cyan'
+
+
 def print_issue(issue):
     """Print the issue and its details in a beautifull way."""
-#    print issue.key + \
-#        '-' + issue.fields.issuetype.name + \
-#        '-' + issue.fields.summary
-#    click.secho(issue.fields.issuetype.name, fg='green', bold=True)
-#    click.secho(issue.fields.summary, bg='blue', fg='white', bold=True)
-
     click.echo(
-        click.style(issue.key) + " " +
-        click.style(issue.fields.issuetype.name, fg='green') + " " +
+        click.style(issue.key, bg='blue', fg='white') + " " +
+        click.style(issue.fields.issuetype.name, fg=color_issue(issue)) + " " +
         click.style(issue.fields.summary)
     )
 
